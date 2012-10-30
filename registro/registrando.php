@@ -4,7 +4,10 @@ require_once "../funciones/conexion.php";
 require_once "../funciones/encriptado.php";
 require_once "../funciones/general.php";
 require_once "../funciones/mail.php";
-if($_SESSION['Registro'] != NULL){ //Si la sesión existe descargo los valores del arreglo multidimensional
+if($_SESSION)
+if($_SESSION['Registro'] == NULL){ //Si la sesión existe descargo los valores del arreglo multidimensional
+header("location:index.php");
+}else{
 $Actividad_Valor = $_SESSION['Registro']['Actividad']['Valor'];
 $Clave_Valor = $_SESSION['Registro']['Clave']['Valor'];
 $Correo_Valor = $_SESSION['Registro']['Correo']['Valor'];
@@ -15,9 +18,6 @@ $Nombre_Valor = $_SESSION['Registro']['Nombre']['Valor'];
 $Ubicacion_Valor = $_SESSION['Registro']['Estado']['Valor'];
 $Telefono_Valor = $_SESSION['Registro']['Telefono']['Valor'];
 $_SESSION['Registro'] = NULL;
-}else{
-header("location:index.php");
-}
 //Defino variables centradas
 $Telefono_Final_Valor = "$Lada_Valor-$Telefono_Valor";
 $Fecha_Unix_Registro = time();
@@ -74,5 +74,5 @@ $Mensaje='<body>
 </body>';
 MailSMTP($Correo_Valor, $Asunto, $Mensaje);
 header("location:../mensaje.php?Mensaje=registro_listo&Correo=$Correo_Valor&Redirige=dominio_correo");
-}
+}}
 ?>
