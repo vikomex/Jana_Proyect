@@ -4,9 +4,10 @@ require_once "../funciones/conexion.php";
 require_once "../funciones/encriptado.php";
 require_once "../funciones/general.php";
 require_once "../funciones/mail.php";
+
 if($_SESSION)
 if($_SESSION['Registro'] == NULL){ //Si la sesión existe descargo los valores del arreglo multidimensional
-header("location:index.php");
+header('Location:index.php');
 }else{
 $Actividad_Valor = $_SESSION['Registro']['Actividad']['Valor'];
 $Clave_Valor = $_SESSION['Registro']['Clave']['Valor'];
@@ -31,7 +32,7 @@ OR correo_usuario='%s' AND estado_usuario='2'",
 $Resultado_Verificar_Usuario_Existente = mysql_query($Verificar_Usuario_Existente);
 	if(mysql_num_rows($Resultado_Verificar_Usuario_Existente)){ //Si existe algun usuario activado o baneado con ese correo lo redirijo
 			mysql_free_result($Resultado_Verificar_Usuario_Existente);
-			header("location:../mensaje.php?Mensaje=correo_existente&Correo=$Correo_Valor&Redirige=iForgot");
+			header("Location:../mensaje.php?Mensaje=correo_existente&Correo=$Correo_Valor&Redirige=iForgot");
 	}
 $Verificar_Usuario_No_Activado = sprintf("SELECT estado_usuario FROM usuarios WHERE correo_usuario='%s' 
 AND estado_usuario='0'", //verifico si existe un correo igual registrado pero desactivado
@@ -55,24 +56,25 @@ $Nuevo_Usuario = sprintf("INSERT INTO usuarios (nombre_usuario, correo_usuario, 
 				mysql_real_escape_string($Fecha_Unix_Registro),
 				mysql_real_escape_string($Codigo_Seguridad)); 
 if(mysql_query($Nuevo_Usuario)){
-$Primer_Nombre = Primera_Palabra($Nombre_Valor);
-$Asunto="$Nombre_Plataforma - Activa tu usuario";
-$Mensaje='<body>
-<table width="90%" border="0" cellspacing="0" cellpadding="0" align="center">
-  <tr>
-    <td><p><font face="Verdana">Hola '.$Primer_Nombre.'</font></p>
-    <p><font face="Verdana">Muchas gracias por registrarte en <a href="'.$Dominio_Plataforma.'" target="_blank">'.$Nombre_Plataforma.'</a>, para activar tu cuenta y terminar el proceso de registro, da clic en la siguiente liga:</font></p>
-    <p><a href="'.$Dominio_Plataforma.'/auth.php?Accion=Alta&Correo='.$Correo_Valor.'&Token='.$Codigo_Seguridad.'" target="_blank"><font face="Verdana">'.$Dominio_Plataforma.'/auth.php?Accion=Alta&amp;Correo='.$Correo_Valor.'&amp;Token='.$Codigo_Seguridad.'</font></a></p>
-    <p><font face="Verdana">Tu usuario: '.$Correo_Valor.'<br>
-        Tu clave de acceso: 
-    '.$Clave_Valor.'</font></p>
-    <p><font face="Verdana">Si por algún motivo, la liga es inaccesible, entra directamente a '.$Dominio_Plataforma.'/registro/activar e ingresa tu correo y el siguiente código.</font></p>
-    <p><font face="Verdana">Código: </font>    <font face="Verdana">'.$Codigo_Seguridad.'</font>    </p>
-    <p>&nbsp;</p></td>
-  </tr>
-</table>
-</body>';
+    $Primer_Nombre = Primera_Palabra($Nombre_Valor);
+    $Asunto="$Nombre_Plataforma - Activa tu usuario";
+    $Mensaje='<body>
+    <table width="90%" border="0" cellspacing="0" cellpadding="0" align="center">
+      <tr>
+        <td>
+  	    <p><font face="Verdana">Hola '.$Primer_Nombre.'</font></p>
+            <p><font face="Verdana">Muchas gracias por registrarte en <a href="'.$Dominio_Plataforma.'" target="_blank">'.$Nombre_Plataforma.'</a>, para activar tu cuenta y terminar el proceso de registro, da clic en la siguiente liga:</font></p>
+            <p><a href="'.$Dominio_Plataforma.'/auth.php?Accion=Alta&Correo='.$Correo_Valor.'&Token='.$Codigo_Seguridad.'" target="_blank"><font face="Verdana">'.$Dominio_Plataforma.'/auth.php?Accion=Alta&amp;Correo='.$Correo_Valor.'&amp;Token='.$Codigo_Seguridad.'</font></a></p>
+            <p><font face="Verdana">Tu usuario: '.$Correo_Valor.'<br>Tu clave de acceso:'.$Clave_Valor.'</font></p>
+            <p><font face="Verdana">Si por algún motivo, la liga es inaccesible, entra directamente a '.$Dominio_Plataforma.'/registro/activar e ingresa tu correo y el siguiente código.</font></p>
+            <p><font face="Verdana">Código: </font>    <font face="Verdana">'.$Codigo_Seguridad.'</font>    </p>
+            <p>&nbsp;</p>
+        </td>
+      </tr>
+    </table>
+    </body>';
 MailSMTP($Correo_Valor, $Asunto, $Mensaje);
-header("location:../mensaje.php?Mensaje=registro_listo&Correo=$Correo_Valor&Redirige=dominio_correo");
-}}
+header("Location:../mensaje.php?Mensaje=registro_listo&Correo=$Correo_Valor&Redirige=dominio_correo");
+}
+}
 ?>
